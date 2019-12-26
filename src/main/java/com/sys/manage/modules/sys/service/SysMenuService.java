@@ -11,6 +11,19 @@ import java.util.List;
  */
 public interface SysMenuService extends BaseService<SysMenuEntity> {
 
+    /**
+     *
+     * 根据角色id获取菜单列表
+     *
+     * @Description:
+     *
+     * @author tianms
+     * @date 2019/12/19 21:13
+     * @param  roleId
+     * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
+     */
+    List<SysMenuEntity> queryMenuListByRoleId (String roleId);
+
 	/**
 	 *
 	 * 获取用户菜单列表
@@ -24,20 +37,27 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
 	*/
 	List<SysMenuEntityVo> getRoleMenuList(String roleId);
 
+
+    /**
+     * 根据角色id获取格式化后的菜单列表
+     * 功能描述:
+     * @param roleId
+     * @auther: tianms
+     * @date: 2019/12/26 09:36
+     * @return java.util.List<com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo>
+     */
+    List<SysMenuEntityVo> queryFormatMenuListByRoleId (String roleId);
+
+
 	/**
-	 *
-	 * 根据角色id获取菜单列表
-	 *
-	 * @Description:
-	 *
-	 * @author tianms
-	 * @date 2019/12/19 21:13
-	 * @param  roleId
-	 * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
-	*/
-	List<SysMenuEntityVo> queryListByRoleId (String roleId);
-
-
+	 * 获取角色的权限
+	 * 功能描述:
+	 * @param roleId    角色id
+	 * @auther: tianms
+	 * @date: 2019/12/26 09:27
+	 * @return java.util.List<java.lang.String>
+	 */
+    List<String> queryRoleIdPerMissions (String roleId);
 
 
 	/**

@@ -36,8 +36,11 @@ public class SysMenuController extends AbstractController {
 	*/
 	@RequestMapping(value = "/nav")
 	public R nav () {
+	    // 获取角色的菜单列表
 		List<SysMenuEntityVo> sysMenuVoList = sysMenuService.getRoleMenuList(getRoleId());
-		return R.ok().put("menuList", sysMenuVoList);
+		// 获取角色的权限
+		List<String> perMissionList = sysMenuService.queryRoleIdPerMissions(getRoleId());
+		return R.ok().put("menuList", sysMenuVoList).put("permissions", perMissionList);
 	}
 
 	/**
