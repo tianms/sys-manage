@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sys.manage.modules.sys.dao.SysRoleDao">
+
+	<!-- 基础查询列 -->
+	<sql id="Base_Column_List">
+		role_id AS roleId,
+		role_name AS roleName,
+		remark AS remark,
+		create_user_id AS createUserId,
+		create_time AS createTime
+	</sql>
+
+	<!-- 查询所有的角色列表 -->
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysRoleEntity">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			sys_role
+ 	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysRoleEntity">
+		INSERT INTO sys_role
+		(
+			role_id
+			<if test="roleName != null and roleName != ''">, role_name</if>
+			<if test="name != null and name != ''">, name</if>
+			<if test="remark != null and remark != ''">, remark</if>
+			<if test="createUserId != null and createUserId != ''">, create_user_id</if>
+			<if test="createTime != null and createTime != ''">, create_time</if>
+		)
+		VALUES
+		(
+			#{roleId}
+			<if test="roleName != null and roleName != ''">, #{roleName}</if>
+			<if test="name != null and name != ''">, #{name}</if>
+			<if test="remark != null and remark != ''">, #{remark}</if>
+			<if test="createUserId != null and createUserId != ''">, #{createUserId}</if>
+			<if test="createTime != null and createTime != ''">, #{createTime}</if>
+		)
+	</insert>
+
+
+
+	<!-- 查询用户创建的角色ID列表 -->
+	<select id="queryRoleIdList" resultType="long">
+		select role_id from sys_role where create_user_id = #{createUserId} 
+	</select> 
+	
+
+</mapper>

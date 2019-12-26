@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sys.manage.modules.sys.dao.SysUserRoleDao">
+
+	<!-- 基础查询列 -->
+	<sql id="Base_Column_List">
+		id,
+		user_id as userId,
+		role_id as roleId
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysUserRoleEntity">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			sys_user_role
+		<where>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="roleId != null and roleId != ''">
+				AND role_id = #{roleId}
+			</if>
+		</where>
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysUserRoleEntity">
+		INSERT INTO sys_user_role
+		(
+			id,
+			<if test="roleId != null and roleId != ''">, role_id</if>
+			<if test="userId != null and userId != ''">, user_id</if>
+		)
+		VALUES
+		(
+			#{id}
+			<if test="roleId != null and roleId != ''">, #{roleId}</if>
+			<if test="userId != null and userId != ''">, #{userId}</if>
+		)
+	</insert>
+
+	<!-- 查询详细 -->
+	<select id="queryByMap" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysUserRoleEntity">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			sys_user_role
+		<where>
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND user_id = #{userId}
+			</if>
+			<if test="roleId != null and roleId != ''">
+				AND role_id = #{roleId}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteBatch">
+		delete from sys_user_role where role_id in
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</delete>
+
+	<select id="queryRoleId" resultType="long">
+		select role_id from sys_user_role where user_id = #{value}
+	</select>
+</mapper>

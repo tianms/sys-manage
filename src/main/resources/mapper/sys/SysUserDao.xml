@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sys.manage.modules.sys.dao.SysUserDao">
+
+	<!-- 基础查询列 -->
+	<sql id="Base_Column">
+		USER_ID AS userId,
+		USER_NAME AS userName,
+		PASS_WORD AS passWord,
+		SALT AS salt,
+		EMAIL AS email,
+		MOBILE AS mobile,
+		STATUS AS status,
+		CREATE_USER_ID AS createUserId,
+		CREATE_TIME AS createTime
+	</sql>
+
+	<!-- 根据条件查询用户详细信息 -->
+	<select id="queryByMap" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysUserEntity">
+		SELECT
+			<include refid="Base_Column"></include>
+		FROM
+			sys_user
+		<where>
+			<if test="userName != null and userName != ''">
+				AND USER_NAME LIKE CONCAT('%', #{userName}, '%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据条件查询用户列表 -->
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysUserEntity">
+		SELECT
+			<include refid="Base_Column"></include>
+		FROM
+			sys_user
+		<where>
+			<if test="userName != null and userName != ''">
+				AND USER_NAME LIKE CONCAT('%', #{userName}, '%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysUserEntity">
+		INSERT INTO sys_user
+		(
+			USER_ID,
+			<if test="userName != null and userName != ''">, USER_NAME</if>
+			<if test="passWord != null and passWord != ''">, PASS_WORD</if>
+			<if test="salt != null and salt != ''">, SALT</if>
+			<if test="email != null and email != ''">, EMAIL</if>
+			<if test="mobile != null and mobile != ''">, MOBILE</if>
+			<if test="status != null and status != ''">, STATUS</if>
+			<if test="createUserId != null and createUserId != ''">, CREATE_USER_ID</if>
+			<if test="createTime != null and createTime != ''">, CREATE_TIME</if>
+		)
+		VALUES
+		(
+			#{userId}
+			<if test="userName != null and userName != ''">, #{userName}</if>
+			<if test="passWord != null and passWord != ''">, #{passWord}</if>
+			<if test="salt != null and salt != ''">, #{salt}</if>
+			<if test="email != null and email != ''">, #{email}</if>
+			<if test="mobile != null and mobile != ''">, #{mobile}</if>
+			<if test="status != null and status != ''">, #{status}</if>
+			<if test="createUserId != null and createUserId != ''">, #{createUserId}</if>
+			<if test="createTime != null and createTime != ''">, #{createTime}</if>
+		)
+	</insert>
+
+	<!-- 新增全部 -->
+	<insert id="insertAll" parameterType="com.sys.manage.modules.sys.entity.SysUserEntity">
+		INSERT INTO sys_user
+		(
+			USER_ID,
+			USER_NAME,
+			PASS_WORD,
+			SALT,
+			EMAIL,
+			MOBILE,
+			STATUS,
+			CREATE_USER_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{userId},
+			#{userName},
+			#{passWord},
+			#{salt},
+			#{email},
+			#{mobile},
+			#{status},
+			#{createUserId},
+			#{createTime}
+		)
+	</insert>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.sys.manage.modules.sys.entity.SysUserEntity">
+		UPDATE sys_user
+		<set>
+			<if test="userName != null and userName != ''">USER_NAME = #{userName}, </if>
+			<if test="passWord != null and passWord != ''">PASS_WORD = #{passWord}, </if>
+			<if test="salt != null and salt != ''">SALT = #{salt}, </if>
+			<if test="email != null and email != ''">EMAIL = #{email}, </if>
+			<if test="mobile != null and mobile != ''">MOBILE = #{mobile}, </if>
+			<if test="status != null and status != ''">STATUS = #{status}, </if>
+			<if test="createUserId != null and createUserId != ''">CREATE_USER_ID = #{createUserId}, </if>
+			<if test="createTime != null and createTime != ''">CREATE_TIME = #{createTime}, </if>
+		</set>
+		WHERE USER_ID = #{userId}
+	</update>
+
+</mapper>
