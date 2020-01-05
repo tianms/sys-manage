@@ -1,11 +1,12 @@
 package com.sys.manage.modules.sys.service.impl;
 
+import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.exception.RRException;
 import com.sys.manage.common.utils.R;
 import com.sys.manage.common.utils.TokenUtils;
 import com.sys.manage.config.EhcacheService;
-import com.sys.manage.modules.common.service.entity.SysLoginEntity;
+import com.sys.manage.modules.base.entity.SysLoginEntity;
 import com.sys.manage.modules.sys.entity.SysUserEntity;
 import com.sys.manage.modules.sys.entity.SysUserRoleEntity;
 import com.sys.manage.modules.sys.entity.vo.SysUserEntityVo;
@@ -62,7 +63,7 @@ public class SysLoginServiceImpl implements SysLoginService {
 
         // 登录成功，生成token，保存到缓存中
         String token = TokenUtils.makeToken();
-        ehcacheService.putWithTime(token, userId, Constant.SYS_CONSTANT.TOKEN_EXPIRE);
+        ehcacheService.putWithTime(CacheKeyConstant.USER_TOKEN_KEY + token, userId, Constant.SYS_CONSTANT.TOKEN_EXPIRE);
 
         SysUserEntityVo sysUserEntityVo = new SysUserEntityVo();
         BeanUtils.copyProperties(sysUserEntity, sysUserEntityVo);
@@ -75,7 +76,7 @@ public class SysLoginServiceImpl implements SysLoginService {
         sysUserEntityVo.setRoleId(sysUserRoleEntity.getRoleId());
 
         // 将用户信息对应的用户id保存到缓存中
-        ehcacheService.putWithTime(String.valueOf(userId), sysUserEntityVo, Constant.SYS_CONSTANT.TOKEN_EXPIRE);
+        ehcacheService.putWithTime(CacheKeyConstant.USER_INFO_KEY + userId, sysUserEntityVo, Constant.SYS_CONSTANT.TOKEN_EXPIRE);
 
         // 将生成的token返回到前端
         return R.ok().put(Constant.SYS_CONSTANT.TOKEN, token).put(Constant.SYS_CONSTANT.EXPIRE, Constant.SYS_CONSTANT.TOKEN_EXPIRE);

@@ -1,7 +1,7 @@
 package com.sys.manage.modules.sys.service;
 
 import com.sys.manage.common.utils.R;
-import com.sys.manage.modules.common.service.entity.SysLoginEntity;
+import com.sys.manage.modules.base.entity.SysLoginEntity;
 
 /**
  * @Auther: tianms

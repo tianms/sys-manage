@@ -1,5 +1,6 @@
 package com.sys.manage.modules.sys.controller;
 
+import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.exception.RRException;
 import com.sys.manage.config.EhcacheService;
@@ -59,7 +60,7 @@ public abstract class AbstractController {
 	 * @return java.lang.String
 	*/
 	protected String getUserId () {
-		Object object = ehcacheService.get(getAccessToken());
+		Object object = ehcacheService.get(CacheKeyConstant.USER_TOKEN_KEY + getAccessToken());
 		return String.valueOf(object);
 	}
 
@@ -75,7 +76,7 @@ public abstract class AbstractController {
 	 * @return com.sys.manage.modules.sys.entity.SysUserEntity
 	*/
 	protected SysUserEntityVo getUser () {
-		Object object = ehcacheService.get(String.valueOf(getUserId()));
+		Object object = ehcacheService.get(CacheKeyConstant.USER_INFO_KEY + getUserId());
 		return object == null ? null : (SysUserEntityVo) object;
 	}
 

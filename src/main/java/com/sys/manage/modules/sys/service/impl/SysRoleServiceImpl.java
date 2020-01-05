@@ -1,7 +1,7 @@
 package com.sys.manage.modules.sys.service.impl;
 
-import com.sys.manage.common.constants.Constant;
-import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.constants.CacheKeyConstant;
+import com.sys.manage.config.EhcacheService;
 import com.sys.manage.modules.base.service.impl.BaseServiceImpl;
 import com.sys.manage.modules.sys.dao.SysRoleDao;
 import com.sys.manage.modules.sys.entity.SysRoleEntity;
@@ -11,10 +11,6 @@ import com.sys.manage.modules.sys.service.SysUserRoleService;
 import com.sys.manage.modules.sys.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * 角色
@@ -27,7 +23,38 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
 	private SysUserService sysUserService;
 	@Autowired
 	private SysUserRoleService sysUserRoleService;
+	@Autowired
+	private EhcacheService ehcacheService;
 
+
+	/**
+	 *
+	 * 根据id获取角色信息
+	 *
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/01 20:40
+	 * @param  id
+	 * @return com.sys.manage.modules.sys.entity.SysRoleEntity
+	*/
+	@Override
+	public SysRoleEntity queryById (String id) {
+
+		Object object = ehcacheService.get(CacheKeyConstant.USER_ROLE_KEY);
+
+		if (object == null) {
+			// 获取用户角色信息
+			SysRoleEntity sysRoleEntity = super.queryById(id);
+			// 存入缓存
+			ehcacheService.putCacheValue(CacheKeyConstant.USER_ROLE_KEY + id, sysRoleEntity);
+		} else {
+
+		}
+
+
+		return null;
+	}
 
 //	@Override
 //	@Transactional(rollbackFor = Exception.class)

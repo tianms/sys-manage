@@ -1,10 +1,11 @@
 package com.sys.manage.modules.sys.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.sys.manage.common.annotation.SysLog;
-import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.utils.R;
-import com.sys.manage.modules.common.service.entity.PasswordForm;
+import com.sys.manage.modules.base.entity.PasswordForm;
 import com.sys.manage.modules.sys.entity.SysUserEntity;
+import com.sys.manage.modules.sys.entity.vo.SysUserEntityVo;
 import com.sys.manage.modules.sys.service.SysUserService;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -12,8 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,18 +45,24 @@ public class SysUserController extends AbstractController {
 	}
 
 	/**
-	 * 所有用户列表
-	 */
-	@GetMapping("/list")
-	public R list(@RequestParam Map<String, Object> params){
-		//只有超级管理员，才能查看所有管理员列表
-//		if(getUserId() != Constant.SYS_CONSTANT.SUPER_ADMIN){
-//			params.put("createUserId", getUserId());
-//		}
-//		PageUtils page = sysUserService.queryPage(params);
+	 *
+	 * 用户列表
+	 *
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/01 20:14
+	 * @param  params
+	 * @return com.sys.manage.common.utils.R
+	*/
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
+	public R list(@RequestBody Map<String, Object> params){
 
-		return R.ok().put("page", null);
+		PageInfo pageInfo = sysUserService.queryPage(params);
+
+		return R.ok().put("page", pageInfo);
 	}
+
 
 	/**
 	 * 修改登录用户密码
@@ -85,7 +90,7 @@ public class SysUserController extends AbstractController {
 	 */
 	@SysLog("保存用户")
 	@PostMapping("/save")
-	public R save(@RequestBody SysUserEntity user){
+	public R save(@RequestBody SysUserEntity sysUserEntity){
 //		user.setCreateUserId(getUserId());
 //		user.setPassword(Constant.USER_DEFAULT_PASSWORD);// 设置新增用户默认密码111111
 //		sysUserService.save(user);
@@ -97,9 +102,8 @@ public class SysUserController extends AbstractController {
 	 */
 	@SysLog("修改用户")
 	@PostMapping("/update")
-	public R update(@RequestBody SysUserEntity user){
-//		user.setCreateUserId(getUserId());
-//		sysUserService.update(user);
+	public R update(@RequestBody SysUserEntityVo sysUserEntityVo){
+		sysUserService.update(sysUserEntityVo);
 		return R.ok();
 	}
 	

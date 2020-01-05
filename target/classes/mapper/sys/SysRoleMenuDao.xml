@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sys.manage.modules.sys.dao.SysRoleMenuDao">
+
+	<!-- 基础查询列 -->
+	<sql id="Base_Column_List">
+		id,
+		role_id AS roleId,
+		menu_id as menuId
+	</sql>
+
+	<!-- 查询列表 -->
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysRoleMenuEntity">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			sys_role_menu
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysRoleMenuEntity">
+		INSERT INTO sys_role_menu
+		(
+			id
+			<if test="roleId != null and roleId != ''">, role_id</if>
+			<if test="menuId != null and menuId != ''">, menu_id</if>
+		)
+		VALUES
+		(
+			#{id}
+			<if test="roleId != null and roleId != ''">, #{roleId}</if>
+			<if test="menuId != null and menuId != ''">, #{menuId}</if>
+		)
+	</insert>
+
+
+	<select id="queryMenuIdList" resultType="long">
+		select menu_id from sys_role_menu where role_id = #{value}
+	</select>
+
+	<delete id="deleteBatch">
+		delete from sys_role_menu where role_id in
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.utils.R;
 import com.sys.manage.config.EhcacheService;
@@ -31,7 +32,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         // 验证用户是否登录
         String token = request.getHeader(Constant.SYS_CONSTANT.TOKEN);
 
-        Object object = ehcacheService.get(token);
+        Object object = ehcacheService.get(CacheKeyConstant.USER_TOKEN_KEY + token);
 
         if (object == null || StringUtils.isBlank(token)) {
 
