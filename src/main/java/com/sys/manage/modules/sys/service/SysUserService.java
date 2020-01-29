@@ -36,4 +36,31 @@ public interface SysUserService extends BaseService<SysUserEntity> {
 	 */
 	void update (SysUserEntityVo sysUserEntityVo);
 
+	/**
+	 *
+	 * 新增用户信息
+	 *
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/16 20:24
+	 * @param  sysUserEntityVo
+	 * @return void
+	*/
+	void insert (SysUserEntityVo sysUserEntityVo);
+
+
+	/**
+	 *
+	 * 根据用户id获取用户的详细信息
+	 *
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/17 21:16
+	 * @param  userId
+	 * @return com.sys.manage.modules.sys.entity.vo.SysUserEntityVo
+	 */
+	SysUserEntityVo queryById (String userId);
+
 }

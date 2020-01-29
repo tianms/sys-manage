@@ -17,4 +17,9 @@ public class SysMenuEntityVo extends SysMenuEntity {
      */
     private List<SysMenuEntityVo> list;
 
+    /**
+     * 父菜单名称
+     */
+    private String parentMenuName;
+
 }

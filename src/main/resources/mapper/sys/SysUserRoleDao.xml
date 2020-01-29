@@ -30,7 +30,7 @@
 	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysUserRoleEntity">
 		INSERT INTO sys_user_role
 		(
-			id,
+			id
 			<if test="roleId != null and roleId != ''">, role_id</if>
 			<if test="userId != null and userId != ''">, user_id</if>
 		)
@@ -78,10 +78,23 @@
 	</select>
 
 	<delete id="deleteBatch">
-		delete from sys_user_role where role_id in
+		DELETE FROM SYS_USER_ROLE WHERE ROLE_ID IN
 		<foreach item="roleId" collection="array" open="(" separator="," close=")">
 			#{roleId}
 		</foreach>
+	</delete>
+
+	<!-- 根据条件删除 -->
+	<delete id="delete" parameterType="java.util.Map">
+		DELETE FROM sys_user_role
+		<where>
+			<if test="roleId != null and roleId != ''">
+				AND ROLE_ID = #{roleId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
+			</if>
+		</where>
 	</delete>
 
 	<select id="queryRoleId" resultType="long">

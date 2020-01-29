@@ -26,17 +26,14 @@ public class MenuUtils {
      * @date: 2019/12/25 17:22
      * @return java.util.List<com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo>
      */
-    public static List<SysMenuEntityVo> formatMenuList (List<SysMenuEntity> sysMenuList, String type) {
+    public static List<SysMenuEntityVo> formatMenuList (List<SysMenuEntityVo> sysMenuList, String type) {
 
         // 返回的菜单列表
         List<SysMenuEntityVo> resMenuList = new ArrayList<SysMenuEntityVo>();
 
-        for (SysMenuEntity sysMenuEntity : sysMenuList) {
+        for (SysMenuEntityVo sysMenuEntityVo : sysMenuList) {
 
-            if (MenuEnum.CATALOG.getValue().equals(sysMenuEntity.getParentId())) { // 目录
-
-                SysMenuEntityVo sysMenuEntityVo = new SysMenuEntityVo();
-                BeanUtils.copyProperties(sysMenuEntity, sysMenuEntityVo);
+            if (MenuEnum.CATALOG.getValue().equals(sysMenuEntityVo.getParentId())) { // 目录
 
                 // 子菜单列表
                 List<SysMenuEntityVo> childMenuList = getChildMenuList(sysMenuList, sysMenuEntityVo, type);
@@ -59,18 +56,16 @@ public class MenuUtils {
      * @date: 2019/12/25 17:31
      * @return java.util.List<com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo>
      */
-    private static List<SysMenuEntityVo> getChildMenuList (List<SysMenuEntity> menuList, SysMenuEntityVo parentMenu, String type) {
+    private static List<SysMenuEntityVo> getChildMenuList (List<SysMenuEntityVo> menuList, SysMenuEntityVo parentMenu, String type) {
 
         // 子菜单列表
         List<SysMenuEntityVo> childMenuList = new ArrayList<SysMenuEntityVo>();
 
-        for (SysMenuEntity sysMenuEntity : menuList) {
+        for (SysMenuEntityVo sysMenuEntityVo : menuList) {
 
             // 如果当前菜单的父菜单id是传入的父菜单信息中的菜单id，继续获取下级菜单
-            if (parentMenu.getMenuId().equals(sysMenuEntity.getParentId())) {
-                SysMenuEntityVo sysMenuEntityVo = new SysMenuEntityVo();
-                BeanUtils.copyProperties(sysMenuEntity, sysMenuEntityVo);
-                if (sysMenuEntity.getType() == 2) { // 按钮
+            if (parentMenu.getMenuId().equals(sysMenuEntityVo.getParentId())) {
+                if (sysMenuEntityVo.getType() == 2) { // 按钮
                     continue;
                 } else { // 不是按钮，就是菜单
                     List<SysMenuEntityVo> nextChildMenuList =  getChildMenuList(menuList, sysMenuEntityVo, type);

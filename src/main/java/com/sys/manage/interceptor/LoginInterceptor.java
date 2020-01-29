@@ -31,10 +31,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
         // 验证用户是否登录
         String token = request.getHeader(Constant.SYS_CONSTANT.TOKEN);
+        // 根据token获取缓存中的用户信息
+        Object userId = ehcacheService.get(CacheKeyConstant.USER_TOKEN_KEY + token);
+        // 根据用户id获取缓存中的用户信息
+        Object userData = ehcacheService.get(CacheKeyConstant.USER_INFO_KEY + userId);
 
-        Object object = ehcacheService.get(CacheKeyConstant.USER_TOKEN_KEY + token);
-
-        if (object == null || StringUtils.isBlank(token)) {
+        if (StringUtils.isBlank(token) || userId == null || userData == null) {
 
             // 相应信息返回
             String origin = request.getHeader("Origin");
@@ -46,7 +48,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             response.getWriter().print(json);
             return false;
         }
-
 
         return true;
     }

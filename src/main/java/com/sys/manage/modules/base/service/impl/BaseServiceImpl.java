@@ -176,4 +176,20 @@ public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> 
     public void delete(Map<String, Object> params) {
         baseDao.delete(params);
     }
+
+    /**
+     *
+     * 批量删除用户
+     *
+     * @Description:
+     *
+     * @author tianms
+     * @date 2020/01/16 22:02
+     * @param  ids
+     * @return void
+    */
+    @Override
+    public void deleteBatch (List<String> ids) {
+        baseDao.deleteBatch(ids);
+    }
 }

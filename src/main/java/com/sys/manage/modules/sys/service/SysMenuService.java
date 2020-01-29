@@ -1,5 +1,6 @@
 package com.sys.manage.modules.sys.service;
 
+import com.sys.manage.common.utils.R;
 import com.sys.manage.modules.base.service.BaseService;
 import com.sys.manage.modules.sys.entity.SysMenuEntity;
 import com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * 菜单管理
  */
-public interface SysMenuService extends BaseService<SysMenuEntity> {
+public interface SysMenuService extends BaseService<SysMenuEntityVo> {
 
     /**
      *
@@ -22,7 +23,7 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
      * @param  roleId
      * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
      */
-    List<SysMenuEntity> queryMenuListByRoleId (String roleId);
+    List<SysMenuEntityVo> queryMenuListByRoleId (String roleId);
 
 	/**
 	 *
@@ -35,7 +36,7 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
 	 * @param  roleId
 	 * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
 	*/
-	List<SysMenuEntityVo> getRoleMenuList(String roleId);
+	List<SysMenuEntityVo> queryRoleMenuList(String roleId);
 
 
     /**
@@ -57,49 +58,19 @@ public interface SysMenuService extends BaseService<SysMenuEntity> {
 	 * @date: 2019/12/26 09:27
 	 * @return java.util.List<java.lang.String>
 	 */
-    List<String> queryRoleIdPerMissions (String roleId);
-
+    List<String> queryPerMissionsByRoleId (String roleId);
 
 	/**
-	 * 根据父菜单，查询子菜单
 	 *
-	 * @param parentId
-	 *            父菜单ID
-	 * @param menuIdList
-	 *            用户菜单ID
-	 */
-	List<SysMenuEntity> queryListParentId(Long parentId, List<Long> menuIdList);
-
-	/**
-	 * 根据父菜单，查询子菜单
+	 * 获取不包括按钮菜单列表（主要用于菜单编辑选择上级菜单使用）
 	 *
-	 * @param parentId
-	 *            父菜单ID
-	 */
-	List<SysMenuEntity> queryListParentId(Long parentId);
-
-	/**
-	 * 获取不包含按钮的菜单列表
-	 */
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/18 22:01
+	 * @param
+	 * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
+	*/
 	List<SysMenuEntity> queryNotButtonList();
 
-
-	/**
-	 * 删除
-	 */
-	void delete(Long menuId);
-
-	/**
-	 * 查询包含列表的菜单
-	 *
-	 * @Title: queryContainListMenu
-	 * @Description: TODO(这里用一句话描述这个方法的作用)
-	 * @param @return
-	 *            设定文件
-	 * @return List<SysMenuEntity> 返回类型
-	 * @author tianms
-	 * @throws @date
-	 *             2018年6月11日 下午3:47:32
-	 */
-	List<SysMenuEntity> queryContainListMenu();
 }

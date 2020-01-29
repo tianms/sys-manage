@@ -21,10 +21,13 @@
 		SELECT
 			<include refid="Base_Column"></include>
 		FROM
-			sys_user
+			SYS_USER
 		<where>
 			<if test="userName != null and userName != ''">
 				AND USER_NAME LIKE CONCAT('%', #{userName}, '%')
+			</if>
+			<if test="userId != null and userId != ''">
+				AND USER_ID = #{userId}
 			</if>
 		</where>
 	</select>
@@ -34,19 +37,20 @@
 		SELECT
 			<include refid="Base_Column"></include>
 		FROM
-			sys_user
+			SYS_USER
 		<where>
 			<if test="userName != null and userName != ''">
 				AND USER_NAME LIKE CONCAT('%', #{userName}, '%')
 			</if>
 		</where>
+		ORDER BY CREATE_TIME DESC
 	</select>
 
 	<!-- 新增 -->
 	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysUserEntity">
 		INSERT INTO sys_user
 		(
-			USER_ID,
+			USER_ID
 			<if test="userName != null and userName != ''">, USER_NAME</if>
 			<if test="passWord != null and passWord != ''">, PASS_WORD</if>
 			<if test="salt != null and salt != ''">, SALT</if>
@@ -54,7 +58,7 @@
 			<if test="mobile != null and mobile != ''">, MOBILE</if>
 			<if test="status != null and status != ''">, STATUS</if>
 			<if test="createUserId != null and createUserId != ''">, CREATE_USER_ID</if>
-			<if test="createTime != null and createTime != ''">, CREATE_TIME</if>
+			<if test="createTime != null">, CREATE_TIME</if>
 		)
 		VALUES
 		(
@@ -66,7 +70,7 @@
 			<if test="mobile != null and mobile != ''">, #{mobile}</if>
 			<if test="status != null and status != ''">, #{status}</if>
 			<if test="createUserId != null and createUserId != ''">, #{createUserId}</if>
-			<if test="createTime != null and createTime != ''">, #{createTime}</if>
+			<if test="createTime != null">, #{createTime}</if>
 		)
 	</insert>
 
@@ -109,9 +113,16 @@
 			<if test="mobile != null and mobile != ''">MOBILE = #{mobile}, </if>
 			<if test="status != null and status != ''">STATUS = #{status}, </if>
 			<if test="createUserId != null and createUserId != ''">CREATE_USER_ID = #{createUserId}, </if>
-			<if test="createTime != null and createTime != ''">CREATE_TIME = #{createTime}, </if>
+			<if test="createTime != null">CREATE_TIME = #{createTime}, </if>
 		</set>
 		WHERE USER_ID = #{userId}
 	</update>
 
+	<!-- 批量删除用户 -->
+	<delete id="deleteBatch" parameterType="java.util.List">
+		DELETE FROM sys_user WHERE user_id IN
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
 </mapper>

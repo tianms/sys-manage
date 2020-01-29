@@ -52,4 +52,9 @@ public class SysMenuEntity implements Serializable {
 	 */
 	private Integer orderNum;
 
+	/**
+	 * 是否为系统菜单（用于控制菜单是否可以删除，系统菜单不可以删除），0：不是系统菜单，1：系统菜单
+	 */
+	private String isSysMenu;
+
 }

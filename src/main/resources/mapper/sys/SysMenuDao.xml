@@ -16,7 +16,7 @@
 	</sql>
 
 	<!-- 查询列表 -->
-	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysMenuEntity">
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo">
 		SELECT
 			sm.menu_id AS menuId,
 			sm.parent_id AS parentId,
@@ -33,7 +33,14 @@
 			<if test="rolId != null and roleId != ''">
 				AND srm.role_id = #{roleId}
 			</if>
+			<if test="parentId != null and parentId != ''">
+				AND sm.parent_id = #{parentId}
+			</if>
+			<if test="noButton != null and noButton != ''">
+				AND TYPE != 2
+			</if>
 		</where>
+		ORDER BY order_num ASC
 	</select>
 
 	<!-- 新增 -->
@@ -48,6 +55,7 @@
 			<if test="type != null and type != ''">, type</if>
 			<if test="icon != null and icon != ''">, icon</if>
 			<if test="orderNum != null and orderNum != ''">, order_num</if>
+			<if test="isSysMenu != null and isSysMenu != ''">, IS_SYS_MENU</if>
 		)
 		VALUES
 		(
@@ -59,6 +67,7 @@
 			<if test="type != null and type != ''">, #{type}</if>
 			<if test="icon != null and icon != ''">, #{icon}</if>
 			<if test="orderNum != null and orderNum != ''">, #{orderNum}</if>
+			<if test="isSysMenu != null and isSysMenu != ''">, #{isSysMenu}</if>
 		)
 	</insert>
 
@@ -73,7 +82,8 @@
 			perms,
 			type,
 			icon,
-			order_num
+			order_num,
+			IS_SYS_MENU
 		)
 		VALUES
 		(
@@ -84,25 +94,50 @@
 			#{perms},
 			#{type},
 			#{icon},
-			#{orderNum}
+			#{orderNum},
+			#{isSysMenu}
 		)
 	</insert>
 
-	<select id="queryListParentId" resultType="com.sys.manage.modules.sys.entity.SysMenuEntity">
-		select * from sys_menu where parent_id = #{parentId} order by order_num asc
+	<!-- 根据id获取信息 -->
+	<select id="queryById" parameterType="java.lang.String" resultType="com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo">
+		SELECT
+			<include refid="Base_Column"></include>
+		FROM
+			sys_menu
+		WHERE
+			menu_id = #{id}
 	</select>
 
+	<!-- 查询不包括按钮的菜单列表 -->
 	<select id="queryNotButtonList" resultType="com.sys.manage.modules.sys.entity.SysMenuEntity">
-		select * from sys_menu where type != 2 order by order_num asc
+		SELECT
+			<include refid="Base_Column"></include>
+		FROM
+			SYS_MENU
+		WHERE
+			TYPE != 2
+		ORDER BY ORDER_NUM ASC
 	</select>
-	
-	<!-- 查询包含列表的菜单 -->
-	<select id="queryContainListMenu" resultType="com.sys.manage.modules.sys.entity.SysMenuEntity">
-		SELECT menu_id AS menuId,name,perms FROM sys_menu
-			WHERE menu_id in (
-				SELECT parent_id FROM sys_menu WHERE type = 2 AND perms LIKE '%list%'
-			)
-		AND parent_id != 1
-	</select>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.sys.manage.modules.sys.entity.SysMenuEntity">
+		UPDATE sys_menu
+		<set>
+			<if test="parentId != null and parentId != ''">parent_id = #{parentId}, </if>
+			<if test="name != null and name != ''">name = #{name}, </if>
+			<if test="url != null and url != ''">url = #{url}, </if>
+			<if test="perms != null and perms != ''">perms = #{perms}, </if>
+			<if test="type != null and type != ''">type = #{type}, </if>
+			<if test="icon != null and icon != ''">icon = #{icon}, </if>
+			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum}, </if>
+		</set>
+		where menu_id = #{menuId}
+	</update>
+
+	<!-- 删除菜单 -->
+	<delete id="delete" parameterType="java.lang.String">
+		DELETE FROM sys_menu WHERE menu_id = #{value}
+	</delete>
 
 </mapper>

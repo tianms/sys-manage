@@ -3,6 +3,7 @@ package com.sys.manage.modules.sys.service.impl;
 import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.utils.Base64Utils;
 import com.sys.manage.common.utils.R;
 import com.sys.manage.common.utils.TokenUtils;
 import com.sys.manage.config.EhcacheService;
@@ -46,11 +47,14 @@ public class SysLoginServiceImpl implements SysLoginService {
     @Override
     public R login(SysLoginEntity sysLoginEntity) {
 
+        // 对用户名解码
+        String userName = Base64Utils.decode(sysLoginEntity.getUserName());
+
         // 根据用户名获取用户信息
-        SysUserEntity sysUserEntity = sysUserService.queryByUserName(sysLoginEntity.getUserName());
+        SysUserEntity sysUserEntity = sysUserService.queryByUserName(userName);
 
         //账号不存在、密码错误
-        if(null == sysUserEntity || !sysUserEntity.getPassWord().equals(sysUserEntity.getPassWord())) {
+        if(null == sysUserEntity || !sysUserEntity.getPassWord().equals(sysLoginEntity.getPassWord())) {
             return R.error("账号或密码不正确");
         }
 

@@ -1,15 +1,17 @@
 package com.sys.manage.modules.sys.service.impl;
 
 import com.sys.manage.common.constants.Constant;
+import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.utils.MapUtils;
 import com.sys.manage.common.utils.MenuUtils;
-import com.sys.manage.config.EhcacheService;
+import com.sys.manage.common.utils.R;
+import com.sys.manage.common.utils.UUIDUtil;
 import com.sys.manage.modules.base.service.impl.BaseServiceImpl;
 import com.sys.manage.modules.sys.dao.SysMenuDao;
 import com.sys.manage.modules.sys.entity.SysMenuEntity;
 import com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo;
 import com.sys.manage.modules.sys.service.SysMenuService;
 import com.sys.manage.modules.sys.service.SysRoleMenuService;
-import com.sys.manage.modules.sys.service.SysUserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service("sysMenuService")
-public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
-    @Autowired
-    private SysUserService sysUserService;
+public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntityVo> implements SysMenuService {
+
     @Autowired
     private SysRoleMenuService sysRoleMenuService;
-    @Autowired
-    private SysMenuService sysMenuService;
-    @Autowired
-    private EhcacheService ehcacheService;
 
     /**
      * 根据角色id获取菜单列表
@@ -40,15 +37,15 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
      * @date 2019/12/19 21:13
      */
     @Override
-    public List<SysMenuEntity> queryMenuListByRoleId(String roleId) {
+    public List<SysMenuEntityVo> queryMenuListByRoleId(String roleId) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("roleId", roleId);
-        List<SysMenuEntity> sysMenuList = baseDao.queryList(params);
+        List<SysMenuEntityVo> sysMenuList = baseDao.queryList(params);
         return sysMenuList;
     }
 
     /**
-     * 获取角色菜单列表
+     * 获取角色菜单列表(树状菜单列表)
      *
      * @param roleId
      * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
@@ -57,19 +54,10 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
      * @date 2019/12/15 16:31
      */
     @Override
-    public List<SysMenuEntityVo> getRoleMenuList(String roleId) {
-        // Step:1 根据角色查询缓存中角色绑定的菜单列表
-        Object object = ehcacheService.get(roleId);
-        // Step:2 如果缓存中未查询到角色绑定的列表，则从数据库中查询角色绑定的列表信息，并返回
-        if (object == null) {
-            // 根据角色获取角色列表
-            List<SysMenuEntityVo> sysMenuList = this.queryFormatMenuListByRoleId(roleId);
-            // 存入缓存
-            ehcacheService.putWithTime(roleId, sysMenuList, Constant.SYS_CONSTANT.TOKEN_EXPIRE);
-            return sysMenuList;
-        } else {
-            return (List<SysMenuEntityVo>) object;
-        }
+    public List<SysMenuEntityVo> queryRoleMenuList(String roleId) {
+        // 根据角色获取角色列表
+        List<SysMenuEntityVo> sysMenuList = this.queryFormatMenuListByRoleId(roleId);
+        return sysMenuList;
     }
 
     /**
@@ -85,7 +73,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
     public List<SysMenuEntityVo> queryFormatMenuListByRoleId(String roleId) {
 
         // 根据角色获取菜单列表
-        List<SysMenuEntity> sysMenuList = this.queryMenuListByRoleId(roleId);
+        List<SysMenuEntityVo> sysMenuList = this.queryMenuListByRoleId(roleId);
 
         // 格式化菜单为页面需要的菜单列表类型
         List<SysMenuEntityVo> sysMenuEntityVo = MenuUtils.formatMenuList(sysMenuList, "");
@@ -104,74 +92,162 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
      * @date: 2019/12/26 09:27
      */
     @Override
-    public List<String> queryRoleIdPerMissions(String roleId) {
+    public List<String> queryPerMissionsByRoleId(String roleId) {
         List<String> perMissionList = new ArrayList<String>();
 
         // 获取角色的菜单列表
-        List<SysMenuEntity> sysMenuList = this.queryMenuListByRoleId(roleId);
+        List<SysMenuEntityVo> sysMenuList = this.queryMenuListByRoleId(roleId);
 
-        for (SysMenuEntity sysMenuEntity : sysMenuList) {
-            if (StringUtils.isNotBlank(sysMenuEntity.getPerms())) {
-                perMissionList.add(sysMenuEntity.getPerms());
+        for (SysMenuEntityVo sysMenuEntityVo : sysMenuList) {
+            if (StringUtils.isNotBlank(sysMenuEntityVo.getPerms())) {
+                perMissionList.add(sysMenuEntityVo.getPerms());
             }
         }
         return perMissionList;
 
     }
 
-
-    /// -------------------------------------- 老版---------------------------------------------------------
-    @Override
-    public List<SysMenuEntity> queryListParentId(Long parentId, List<Long> menuIdList) {
-        List<SysMenuEntity> menuList = queryListParentId(parentId);
-        if (menuIdList == null) {
-            return menuList;
-        }
-
-        List<SysMenuEntity> userMenuList = new ArrayList<>();
-        for (SysMenuEntity menu : menuList) {
-            if (menuIdList.contains(menu.getMenuId())) {
-                userMenuList.add(menu);
-            }
-        }
-        return userMenuList;
-    }
-
-    @Override
-    public List<SysMenuEntity> queryListParentId(Long parentId) {
-        return baseDao.queryListParentId(parentId);
-    }
-
+    /**
+     *
+     * 获取不包括按钮菜单列表（主要用于菜单编辑选择上级菜单使用）
+     *
+     * @Description:
+     *
+     * @author tianms
+     * @date 2020/01/18 22:01
+     * @param
+     * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
+     */
     @Override
     public List<SysMenuEntity> queryNotButtonList() {
         return baseDao.queryNotButtonList();
     }
 
-
+    /**
+     * 菜单新增
+     * 功能描述:
+     * @param sysMenuEntityVo
+     * @auther: tianms
+     * @date: 2020/01/23 13:22
+     * @return void
+     */
     @Override
-    public void delete(Long menuId) {
-        // 删除菜单
-        // 删除菜单与角色关联
+    public void insert(SysMenuEntityVo sysMenuEntityVo) {
+
+        // 校验新增的菜单信息是否正确
+        this.verifyForm(sysMenuEntityVo);
+
+        sysMenuEntityVo.setMenuId(UUIDUtil.generateID()); // 生成菜单id
+        sysMenuEntityVo.setIsSysMenu(Constant.SYS_CONSTANT.NO); // 不是系统菜单
+
+        // 新增菜单信息
+        super.insert(sysMenuEntityVo);
+    }
+
+    /**
+     * 菜单修改
+     * 功能描述:
+     * @param sysMenuEntityVo
+     * @auther: tianms
+     * @date: 2020/01/23 13:22
+     * @return void
+     */
+    @Override
+    public void update(SysMenuEntityVo sysMenuEntityVo) {
+
+        // 校验新增的菜单信息是否正确
+        this.verifyForm(sysMenuEntityVo);
+
+        // 修改菜单信息
+        super.update(sysMenuEntityVo);
     }
 
 
     /**
-     * 查询包含列表的菜单
-     * <p>
-     * Title: queryContainListMenu
-     * </p>
-     * <p>
-     * Description:
-     * </p>
-     *
-     * @return
-     * @author tianms
-     * @date 2018年6月11日 下午3:49:14
-     * @see SysMenuService#queryContainListMenu()
+     * 验证菜单信息中参数是否正确
+     * 功能描述:
+     * @param sysMenuEntityVo
+     * @auther: tianms
+     * @date: 2020/01/23 13:25
+     * @return void
+     */
+    private void verifyForm(SysMenuEntityVo sysMenuEntityVo) {
+        if (StringUtils.isBlank(sysMenuEntityVo.getName())) {
+            throw new RRException("菜单名称不能为空");
+        }
+
+        if (sysMenuEntityVo.getParentId() == null) {
+            throw new RRException("上级菜单不能为空");
+        }
+    }
+
+    /**
+     * 根据id获取菜单详细信息
+     * 功能描述:
+     * @param menuId
+     * @auther: tianms
+     * @date: 2020/01/28 15:20
+     * @return com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo
      */
     @Override
-    public List<SysMenuEntity> queryContainListMenu() {
-        List<SysMenuEntity> meunList = baseDao.queryContainListMenu();
-        return meunList;
+    public SysMenuEntityVo queryById(String menuId) {
+
+        // 如果查询的是一级目录信息或者id为空，返回空
+        if (Constant.MENU.ROOTMENUID.equals(menuId) || StringUtils.isBlank(menuId)) {
+            return null;
+        }
+
+        // 获取菜单信息
+        SysMenuEntityVo sysMenuEntityVo = super.queryById(menuId);
+
+        if (Constant.MENU.ROOTMENUID.equals(sysMenuEntityVo.getParentId())) { // 一级菜单
+            sysMenuEntityVo.setParentMenuName(Constant.MENU.ROOTMENUNAME);
+        } else { // 上级菜单不是一级目录
+            // 获取上级菜单信息
+            SysMenuEntityVo parentMenuEntity = super.queryById(sysMenuEntityVo.getParentId());
+            sysMenuEntityVo.setParentMenuName(parentMenuEntity.getName()); // 上级菜单名称
+        }
+        return sysMenuEntityVo;
+    }
+
+    /**
+     *
+     * 批量删除菜单
+     *
+     * 功能描述:
+     * @param ids
+     * @auther: tianms
+     * @date: 2020/01/28 18:23
+     * @return void
+     */
+    @Override
+    public void deleteBatch (List<String> ids) {
+
+        if (null == ids || ids.size() == 0) {
+            return;
+        }
+
+        for (String menuId : ids) {
+            // 获取要删除的菜单信息
+            SysMenuEntityVo sysMenuEntityVo = this.queryById(menuId);
+
+            if (Constant.SYS_CONSTANT.YES.equals(sysMenuEntityVo.getIsSysMenu())) { // 如果是系统菜单，不可以删除
+                throw new RRException("菜单\"" + sysMenuEntityVo.getName() + "\"为系统菜单，不可删除");
+            }
+
+            // 根据菜单查询是否有子菜单或者按钮
+            MapUtils map = new MapUtils();
+            map.put("parentId", menuId);
+            List<SysMenuEntityVo> sysMenuEntityList = this.queryList(map);
+            if (sysMenuEntityList != null && sysMenuEntityList.size() > 0) {
+                throw new RRException("请先删除菜单\"" + sysMenuEntityVo.getName() + "\"下的菜单和按钮");
+            }
+
+            map.put("menuId", menuId);
+            // 删除角色关联的菜单
+            sysRoleMenuService.delete(map);
+
+            super.delete(menuId);
+        }
     }
 }

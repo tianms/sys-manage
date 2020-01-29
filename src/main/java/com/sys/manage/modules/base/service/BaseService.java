@@ -135,4 +135,17 @@ public interface BaseService<T> {
      */
     void delete(Map<String, Object> params);
 
+    /**
+     *
+     * 批量删除
+     *
+     * @Description:
+     *
+     * @author tianms
+     * @date 2020/01/16 21:57
+     * @param  ids
+     * @return void
+    */
+    void deleteBatch (List<String> ids);
+
 }

@@ -2,6 +2,7 @@ package com.sys.manage.modules.base.dao;
 
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public interface BaseDao<T> {
      * @param  id
      * @return T
     */
-    T queryById (String id);
+    T queryById (@RequestParam("id") String id);
 
 
     /**
@@ -136,4 +137,16 @@ public interface BaseDao<T> {
     */
     void delete(Map<String, Object> params);
 
+    /**
+     *
+     * 批量删除用户
+     *
+     * @Description:
+     *
+     * @author tianms
+     * @date 2020/01/16 22:03
+     * @param  ids
+     * @return void
+    */
+    void deleteBatch (List<String> ids);
 }

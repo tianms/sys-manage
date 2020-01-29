@@ -2,6 +2,7 @@ package com.sys.manage.modules.sys.dao;
 
 import com.sys.manage.modules.base.dao.BaseDao;
 import com.sys.manage.modules.sys.entity.SysMenuEntity;
+import com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,32 +11,19 @@ import java.util.List;
  * 菜单管理
  */
 @Mapper
-public interface SysMenuDao extends BaseDao<SysMenuEntity> {
+public interface SysMenuDao extends BaseDao<SysMenuEntityVo> {
 
 	/**
-	 * 根据父菜单，查询子菜单
-	 * 
-	 * @param parentId
-	 *            父菜单ID
-	 */
-	List<SysMenuEntity> queryListParentId(Long parentId);
-
-	/**
-	 * 获取不包含按钮的菜单列表
+	 *
+	 * 获取不包括按钮菜单列表（主要用于菜单编辑选择上级菜单使用）
+	 *
+	 * @Description:
+	 *
+	 * @author tianms
+	 * @date 2020/01/18 22:01
+	 * @param
+	 * @return java.util.List<com.sys.manage.modules.sys.entity.SysMenuEntity>
 	 */
 	List<SysMenuEntity> queryNotButtonList();
 
-	/**
-	 * 查询包含列表的菜单
-	 * 
-	 * @Title: queryContainListMenu
-	 * @Description: TODO(这里用一句话描述这个方法的作用)
-	 * @param @return
-	 *            设定文件
-	 * @return List<SysMenuEntity> 返回类型
-	 * @author tianms
-	 * @throws @date
-	 *             2018年6月11日 下午3:45:25
-	 */
-	List<SysMenuEntity> queryContainListMenu();
 }

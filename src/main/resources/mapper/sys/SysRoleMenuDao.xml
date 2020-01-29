@@ -34,16 +34,17 @@
 		)
 	</insert>
 
-
-	<select id="queryMenuIdList" resultType="long">
-		select menu_id from sys_role_menu where role_id = #{value}
-	</select>
-
-	<delete id="deleteBatch">
-		delete from sys_role_menu where role_id in
-		<foreach item="roleId" collection="array" open="(" separator="," close=")">
-			#{roleId}
-		</foreach>
+	<!-- 根据条件删除 -->
+	<delete id="delete" parameterType="java.util.Map" >
+		delete from sys_role_menu
+		<where>
+			<if test="roleId != null and roleId != ''">
+				AND role_id = #{roleId}
+			</if>
+			<if test="menuId != null and menuId != ''">
+				AND menu_id = #{menuId}
+			</if>
+		</where>
 	</delete>
 
 </mapper>

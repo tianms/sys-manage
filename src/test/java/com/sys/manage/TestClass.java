@@ -58,17 +58,17 @@ public class TestClass {
 
        List<SysRoleEntity> sysRoleEntities  = sysRoleService.queryList(new HashMap<String, Object>());
 
-       List<SysMenuEntity> sysMenuEntities = sysMenuService.queryList(new HashMap<String, Object>());
+       List<SysMenuEntityVo> sysMenuEntityVoList = sysMenuService.queryList(new HashMap<String, Object>());
 
        for (SysRoleEntity sysRoleEntity : sysRoleEntities) {
 
 
-           for (SysMenuEntity sysMenuEntity : sysMenuEntities) {
+           for (SysMenuEntityVo sysMenuEntityVo : sysMenuEntityVoList) {
 
                SysRoleMenuEntity sysRoleMenuEntity = new SysRoleMenuEntity();
 
                sysRoleMenuEntity.setId(UUIDUtil.generateID());
-               sysRoleMenuEntity.setMenuId(sysMenuEntity.getMenuId());
+               sysRoleMenuEntity.setMenuId(sysMenuEntityVo.getMenuId());
                sysRoleMenuEntity.setRoleId(sysRoleEntity.getRoleId());
 
                sysRoleMenuService.insert(sysRoleMenuEntity);
@@ -79,8 +79,8 @@ public class TestClass {
 
     @Test
     public void testQueryMenuList () {
-        List<SysMenuEntity> sysMenuEntities = sysMenuService.queryList(new HashMap<String, Object>());
-        List<SysMenuEntityVo> sysMenuEntityVos = this.getList(sysMenuEntities);
+        List<SysMenuEntityVo> sysMenuEntityVoList = sysMenuService.queryList(new HashMap<String, Object>());
+        List<SysMenuEntityVo> sysMenuEntityVos = this.getList(sysMenuEntityVoList);
 
         for (SysMenuEntityVo sysMenuEntityVo : sysMenuEntityVos) {
             System.err.println(JSONObject.toJSONString(sysMenuEntityVo));
@@ -88,18 +88,14 @@ public class TestClass {
         }
     }
 
-    private List<SysMenuEntityVo> getList (List<SysMenuEntity> sysMenuList) {
+    private List<SysMenuEntityVo> getList (List<SysMenuEntityVo> sysMenuList) {
 
         List<SysMenuEntityVo> resMenuList = new ArrayList<SysMenuEntityVo>();
 
-        for (SysMenuEntity sysMenuEntity : sysMenuList) {
+        for (SysMenuEntityVo sysMenuEntityVo : sysMenuList) {
 
             // 顶级菜单，获取下面的子菜单
-            if ("0".equals(sysMenuEntity.getParentId())) {
-
-                SysMenuEntityVo sysMenuEntityVo = new SysMenuEntityVo();
-                BeanUtils.copyProperties(sysMenuEntity, sysMenuEntityVo);
-
+            if ("0".equals(sysMenuEntityVo.getParentId())) {
 
                 System.err.println("0=====" + JSONObject.toJSONString(sysMenuEntityVo));
                 // 子菜单列表
@@ -113,7 +109,7 @@ public class TestClass {
         return resMenuList;
     }
 
-    private List<SysMenuEntityVo> getChildMenuList (List<SysMenuEntity> menuList, SysMenuEntityVo parentMenu) {
+    private List<SysMenuEntityVo> getChildMenuList (List<SysMenuEntityVo> menuList, SysMenuEntityVo parentMenu) {
 
         // 子菜单列表
         List<SysMenuEntityVo> childMenuList = new ArrayList<SysMenuEntityVo>();
