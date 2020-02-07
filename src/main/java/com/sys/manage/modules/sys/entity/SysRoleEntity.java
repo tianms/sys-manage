@@ -35,5 +35,9 @@ public class SysRoleEntity implements Serializable {
 	 */
 	private String createUserId;
 
+	/**
+	 * 创建时间
+	 */
+	private Date createTime;
 
 }

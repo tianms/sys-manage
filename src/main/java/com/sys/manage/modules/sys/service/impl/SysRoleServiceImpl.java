@@ -1,134 +1,124 @@
 package com.sys.manage.modules.sys.service.impl;
 
-import com.sys.manage.common.constants.CacheKeyConstant;
-import com.sys.manage.config.EhcacheService;
+import com.sys.manage.common.constants.Constant;
+import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.utils.MapUtils;
+import com.sys.manage.common.utils.UUIDUtil;
 import com.sys.manage.modules.base.service.impl.BaseServiceImpl;
 import com.sys.manage.modules.sys.dao.SysRoleDao;
-import com.sys.manage.modules.sys.entity.SysRoleEntity;
+import com.sys.manage.modules.sys.entity.SysRoleMenuEntity;
+import com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo;
 import com.sys.manage.modules.sys.service.SysRoleMenuService;
 import com.sys.manage.modules.sys.service.SysRoleService;
-import com.sys.manage.modules.sys.service.SysUserRoleService;
-import com.sys.manage.modules.sys.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
- * 角色
+ * 角色信息
  */
 @Service("sysRoleService")
-public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntity> implements SysRoleService {
-	@Autowired
-	private SysRoleMenuService sysRoleMenuService;
-	@Autowired
-	private SysUserService sysUserService;
-	@Autowired
-	private SysUserRoleService sysUserRoleService;
-	@Autowired
-	private EhcacheService ehcacheService;
+public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntityVo> implements SysRoleService {
 
+    @Autowired
+    private SysRoleMenuService sysRoleMenuService;
 
-	/**
-	 *
-	 * 根据id获取角色信息
-	 *
-	 * @Description:
-	 *
-	 * @author tianms
-	 * @date 2020/01/01 20:40
-	 * @param  id
-	 * @return com.sys.manage.modules.sys.entity.SysRoleEntity
-	*/
-	@Override
-	public SysRoleEntity queryById (String id) {
+    /**
+     * 功能描述: 根据角色id获角色详细信息
+     * @param roleId
+     * @auther: tianms
+     * @date: 2020/02/02 13:09
+     * @return com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo
+     */
+    @Override
+    public SysRoleEntityVo queryById (String roleId) {
 
-		Object object = ehcacheService.get(CacheKeyConstant.USER_ROLE_KEY);
+        // 获取角色的详细信息
+        SysRoleEntityVo sysRoleEntityVo = super.queryById(roleId);
 
-		if (object == null) {
-			// 获取用户角色信息
-			SysRoleEntity sysRoleEntity = super.queryById(id);
-			// 存入缓存
-			ehcacheService.putCacheValue(CacheKeyConstant.USER_ROLE_KEY + id, sysRoleEntity);
-		} else {
+        // 获取角色拥有的菜单列表
+        List<String> menuIdList = sysRoleMenuService.queryMenuIdList(roleId);
 
-		}
+        sysRoleEntityVo.setMenuIdList(menuIdList);
 
+        return sysRoleEntityVo;
+    }
 
-		return null;
-	}
+    /**
+     * 
+     * 功能描述: 新增角色信息
+     * @param sysRoleEntityVo
+     * @auther: tianms
+     * @date: 2020/02/02 13:22
+     * @return void
+     */
+    @Override
+    @Transactional
+    public void insert (SysRoleEntityVo sysRoleEntityVo) {
+        // 生成角色id
+        sysRoleEntityVo.setRoleId(UUIDUtil.generateID());
+        sysRoleEntityVo.setCreateTime(new Date());
 
-//	@Override
-//	@Transactional(rollbackFor = Exception.class)
-//	public void save(SysRoleEntity role) {
-////		role.setCreateTime(new Date());
-//
-//		// 检查权限是否越权
-//		checkPrems(role);
-//
-//		// 保存角色与菜单关系
-////		sysRoleMenuService.saveOrUpdate(role.getRoleId(), role.getMenuIdList());
-//	}
-//
-//	@Override
-//	@Transactional(rollbackFor = Exception.class)
-//	public void update(SysRoleEntity role) {
-//
-//		// 检查权限是否越权
-//		checkPrems(role);
-//
-//		// 更新角色与菜单关系
-////		sysRoleMenuService.saveOrUpdate(role.getRoleId(), role.getMenuIdList());
-//	}
-//
-//	@Override
-//	@Transactional(rollbackFor = Exception.class)
-//	public void deleteBatch(Long[] roleIds) {
-//		// 删除角色
-//
-//		// 删除角色与菜单关联
-//		sysRoleMenuService.deleteBatch(roleIds);
-//
-//		// 删除角色与用户关联
-//		sysUserRoleService.deleteBatch(roleIds);
-//	}
-//
-//	@Override
-//	public List<Long> queryRoleIdList(Long createUserId) {
-//		return baseDao.queryRoleIdList(createUserId);
-//	}
-//
-//	/**
-//	 * 检查权限是否越权
-//	 */
-//	private void checkPrems(SysRoleEntity role) {
-//		// 如果不是超级管理员，则需要判断角色的权限是否超过自己的权限
-////		if (role.getCreateUserId() == Constant.SYS_CONSTANT.SUPER_ADMIN) {
-////			return;
-////		}
-//
-//		// 查询用户所拥有的菜单列表
-//		List<Long> menuIdList = null; // sysUserService.queryAllMenuId(role.getCreateUserId());
-//
-//		// 判断是否越权
-////		if (!menuIdList.containsAll(role.getMenuIdList())) {
-////			throw new RRException("新增角色的权限，已超出你的权限范围");
-////		}
-//	}
-//
-//	/**
-//	 * 获取所有角色列表
-//	 *
-//	 * @Title: queryAllRole
-//	 * @Description: TODO(这里用一句话描述这个方法的作用)
-//	 * @param @return
-//	 *            设定文件
-//	 * @return List<SysRoleEntity> 返回类型
-//	 * @author tianms
-//	 * @throws @date
-//	 *             2018年6月12日 下午2:29:20
-//	 */
-//	@Override
-//	public List<SysRoleEntity> queryAllRole() {
-//		List<SysRoleEntity> roleList = baseDao.queryAllRole();
-//		return roleList;
-//	}
+        // 新增角色关联的菜单信息
+        sysRoleMenuService.insertByList(sysRoleEntityVo.getMenuIdList(), sysRoleEntityVo.getRoleId());
+
+        // 新增角色详细信息
+        super.insert(sysRoleEntityVo);
+    }
+
+    /**
+     * 
+     * 功能描述: 更新角色信息
+     * @param sysRoleEntityVo
+     * @auther: tianms
+     * @date: 2020/02/07 17:19
+     * @return void
+     */
+    @Override
+    @Transactional
+    public void update (SysRoleEntityVo sysRoleEntityVo) {
+
+        // 删除角色关联的元菜单信息
+        MapUtils mapUtils = new MapUtils();
+        mapUtils.put("roleId", sysRoleEntityVo.getRoleId());
+        sysRoleMenuService.delete(mapUtils);
+
+        // 新增角色关联的菜单信息
+        sysRoleMenuService.insertByList(sysRoleEntityVo.getMenuIdList(), sysRoleEntityVo.getRoleId());
+
+        // 新增角色详细信息
+        super.update(sysRoleEntityVo);
+    }
+
+    /**
+     *
+     * 功能描述: 批量删除角色信息
+     * @param roleIds
+     * @auther: tianms
+     * @date: 2020/02/07 18:59
+     * @return void
+     */
+    @Override
+    public void deleteBatch (List<String> roleIds) {
+
+        for (String roleId : roleIds) {
+
+            // 查询角色信息
+            SysRoleEntityVo sysRoleEntityVo = super.queryById(roleId);
+            if (Constant.SYS_CONSTANT.SUPER_ADMIN.equals(sysRoleEntityVo.getCreateUserId())) {
+                throw new RRException("超级管理员不可以删除");
+            }
+
+            // Step:1 删除角色关联的菜单
+            MapUtils mapUtils = new MapUtils();
+            mapUtils.put("roleId", roleId);
+            sysRoleMenuService.delete(mapUtils);
+
+            // Step:2 删除角色信息
+            super.delete(mapUtils);
+        }
+    }
 }

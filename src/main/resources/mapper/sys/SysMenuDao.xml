@@ -18,7 +18,7 @@
 	<!-- 查询列表 -->
 	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo">
 		SELECT
-			sm.menu_id AS menuId,
+			DISTINCT sm.menu_id AS menuId,
 			sm.parent_id AS parentId,
 			sm.name,
 			sm.url,
@@ -37,7 +37,7 @@
 				AND sm.parent_id = #{parentId}
 			</if>
 			<if test="noButton != null and noButton != ''">
-				AND TYPE != 2
+				AND sm.TYPE != 2
 			</if>
 		</where>
 		ORDER BY order_num ASC

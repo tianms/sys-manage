@@ -13,41 +13,67 @@
 	</sql>
 
 	<!-- 查询所有的角色列表 -->
-	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.SysRoleEntity">
+	<select id="queryList" parameterType="java.util.Map" resultType="com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo">
 		SELECT
 			<include refid="Base_Column_List"></include>
 		FROM
 			sys_role
  	</select>
 
+	<!-- 根据id查询-->
+	<select id="queryById" parameterType="java.lang.String" resultType="com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			sys_role
+		WHERE
+			role_id = #{value}
+	</select>
+
 	<!-- 新增 -->
 	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysRoleEntity">
-		INSERT INTO sys_role
+		INSERT INTO
+			sys_role
 		(
 			role_id
 			<if test="roleName != null and roleName != ''">, role_name</if>
-			<if test="name != null and name != ''">, name</if>
 			<if test="remark != null and remark != ''">, remark</if>
 			<if test="createUserId != null and createUserId != ''">, create_user_id</if>
-			<if test="createTime != null and createTime != ''">, create_time</if>
+			<if test="createTime != null">, create_time</if>
 		)
 		VALUES
 		(
 			#{roleId}
 			<if test="roleName != null and roleName != ''">, #{roleName}</if>
-			<if test="name != null and name != ''">, #{name}</if>
 			<if test="remark != null and remark != ''">, #{remark}</if>
 			<if test="createUserId != null and createUserId != ''">, #{createUserId}</if>
-			<if test="createTime != null and createTime != ''">, #{createTime}</if>
+			<if test="createTime != null">, #{createTime}</if>
 		)
 	</insert>
 
+	<!-- 更新 -->
+	<update id="update" parameterType="com.sys.manage.modules.sys.entity.SysRoleEntity">
+		UPDATE
+			sys_role
+		<set>
+			<if test="roleName != null and roleName != ''">role_name = #{roleName}, </if>
+			<if test="remark != null and remark != ''">remark = #{remark}, </if>
+			<if test="createUserId != null and createUserId != ''">create_user_id = #{createUserId}, </if>
+			<if test="createTime != null and createTime != ''">create_time = #{createTime}, </if>
+		</set>
+		WHERE
+			role_id = #{roleId}
+	</update>
 
-
-	<!-- 查询用户创建的角色ID列表 -->
-	<select id="queryRoleIdList" resultType="long">
-		select role_id from sys_role where create_user_id = #{createUserId} 
-	</select> 
+	<!-- 根据条件删除角色信息 -->
+	<delete id="delete" parameterType="java.util.Map">
+		DELETE FROM sys_role
+		<where>
+			<if test="roleId != null and roleId != ''">
+				AND role_id = #{roleId}
+			</if>
+		</where>
+	</delete>
 	
 
 </mapper>

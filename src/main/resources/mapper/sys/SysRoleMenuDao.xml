@@ -18,6 +18,11 @@
 			sys_role_menu
 	</select>
 
+	<!-- 获取角色菜单列表，返回菜单id列表 -->
+	<select id="queryMenuIdList" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId}
+	</select>
+
 	<!-- 新增 -->
 	<insert id="insert" parameterType="com.sys.manage.modules.sys.entity.SysRoleMenuEntity">
 		INSERT INTO sys_role_menu

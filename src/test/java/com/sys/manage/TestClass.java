@@ -8,6 +8,7 @@ import com.sys.manage.modules.sys.entity.SysRoleEntity;
 import com.sys.manage.modules.sys.entity.SysRoleMenuEntity;
 import com.sys.manage.modules.sys.entity.SysUserEntity;
 import com.sys.manage.modules.sys.entity.vo.SysMenuEntityVo;
+import com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo;
 import com.sys.manage.modules.sys.entity.vo.SysUserEntityVo;
 import com.sys.manage.modules.sys.service.SysMenuService;
 import com.sys.manage.modules.sys.service.SysRoleMenuService;
@@ -56,7 +57,7 @@ public class TestClass {
     @Test
     public void initBaseData () {
 
-       List<SysRoleEntity> sysRoleEntities  = sysRoleService.queryList(new HashMap<String, Object>());
+       List<SysRoleEntityVo> sysRoleEntities  = sysRoleService.queryList(new HashMap<String, Object>());
 
        List<SysMenuEntityVo> sysMenuEntityVoList = sysMenuService.queryList(new HashMap<String, Object>());
 

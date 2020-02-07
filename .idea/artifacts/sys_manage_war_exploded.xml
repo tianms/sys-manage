@@ -64,6 +64,7 @@
           <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache:2.10.4" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
           <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.16.20" />
+          <element id="library" level="project" name="Maven: net.iharder:base64:2.3.8" />
         </element>
       </element>
       <element id="directory" name="META-INF">

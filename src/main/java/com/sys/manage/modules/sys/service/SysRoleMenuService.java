@@ -9,17 +9,26 @@ import java.util.List;
  * 角色与菜单对应关系
  */
 public interface SysRoleMenuService extends BaseService<SysRoleMenuEntity> {
-	
-//	void saveOrUpdate(String roleId, List<String> menuIdList);
-//
-//	/**
-//	 * 根据角色ID，获取菜单ID列表
-//	 */
-//	List<Long> queryMenuIdList(Long roleId);
-//
-//	/**
-//	 * 根据角色ID数组，批量删除
-//	 */
-//	int deleteBatch(Long[] roleIds);
+
+    /**
+     *
+     * 功能描述: 获取角色菜单列表，返回菜单id列表
+     * @param roleId    角色id
+     * @auther: tianms
+     * @date: 2020/02/02 13:07
+     * @return java.util.List<java.lang.String>
+     */
+    List<String> queryMenuIdList(String roleId);
+
+    /**
+     *
+     * 功能描述: 根据列表和角色id新增
+     * @param menuIdList
+     * @param roleId
+     * @auther: tianms
+     * @date: 2020/02/07 17:09
+     * @return void
+     */
+    void insertByList(List<String> menuIdList, String roleId);
 	
 }
