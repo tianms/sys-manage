@@ -1,11 +1,9 @@
 package com.sys.manage.modules.sys.controller;
 
 import com.github.pagehelper.PageInfo;
-import com.sys.manage.common.annotation.SysLog;
 import com.sys.manage.common.constants.Constant;
 import com.sys.manage.common.utils.R;
 import com.sys.manage.modules.base.entity.PasswordForm;
-import com.sys.manage.modules.sys.entity.SysUserEntity;
 import com.sys.manage.modules.sys.entity.vo.SysUserEntityVo;
 import com.sys.manage.modules.sys.service.SysUserService;
 import org.slf4j.Logger;
@@ -122,7 +120,6 @@ public class SysUserController extends AbstractController {
     /**
      * 修改登录用户密码
      */
-    @SysLog("修改密码")
     @PostMapping("/password")
     public R password(@RequestBody PasswordForm form) {
         //sha256加密

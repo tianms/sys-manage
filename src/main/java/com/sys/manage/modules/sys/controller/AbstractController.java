@@ -2,7 +2,7 @@ package com.sys.manage.modules.sys.controller;
 
 import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
-import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.exception.BusinessException;
 import com.sys.manage.config.EhcacheService;
 import com.sys.manage.modules.sys.entity.vo.SysUserEntityVo;
 import org.apache.commons.lang.StringUtils;
@@ -94,7 +94,7 @@ public abstract class AbstractController {
 	protected String getRoleId () {
 		String roleId = this.getUser().getRoleId();
 		if (StringUtils.isBlank(roleId)) {
-			throw new RRException("请联系管理员配置用户角色");
+			throw new BusinessException("请联系管理员配置用户角色");
 		}
 		return roleId;
 	}

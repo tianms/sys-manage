@@ -2,7 +2,7 @@ package com.sys.manage.modules.sys.service.impl;
 
 import com.sys.manage.common.constants.CacheKeyConstant;
 import com.sys.manage.common.constants.Constant;
-import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.exception.BusinessException;
 import com.sys.manage.common.utils.Base64Utils;
 import com.sys.manage.common.utils.R;
 import com.sys.manage.common.utils.TokenUtils;
@@ -75,7 +75,7 @@ public class SysLoginServiceImpl implements SysLoginService {
         // 获取角色信息
         SysUserRoleEntity sysUserRoleEntity = sysUserRoleService.queryByUserId(sysUserEntityVo.getUserId());
         if (sysUserRoleEntity == null) {
-            throw new RRException("请联系管理员配置用户角色");
+            throw new BusinessException("请联系管理员配置用户角色");
         }
         sysUserEntityVo.setRoleId(sysUserRoleEntity.getRoleId());
 

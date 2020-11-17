@@ -1,7 +1,7 @@
 package com.sys.manage.modules.sys.service.impl;
 
 import com.sys.manage.common.constants.Constant;
-import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.exception.BusinessException;
 import com.sys.manage.common.utils.MapUtils;
 import com.sys.manage.common.utils.MenuUtils;
 import com.sys.manage.common.utils.UUIDUtil;
@@ -172,11 +172,11 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
      */
     private void verifyForm(SysMenuEntityVo sysMenuEntityVo) {
         if (StringUtils.isBlank(sysMenuEntityVo.getName())) {
-            throw new RRException("菜单名称不能为空");
+            throw new BusinessException("菜单名称不能为空");
         }
 
         if (sysMenuEntityVo.getParentId() == null) {
-            throw new RRException("上级菜单不能为空");
+            throw new BusinessException("上级菜单不能为空");
         }
     }
 
@@ -231,7 +231,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
             SysMenuEntityVo sysMenuEntityVo = this.queryById(menuId);
 
             if (Constant.SYS_CONSTANT.YES.equals(sysMenuEntityVo.getIsSysMenu())) { // 如果是系统菜单，不可以删除
-                throw new RRException("菜单\"" + sysMenuEntityVo.getName() + "\"为系统菜单，不可删除");
+                throw new BusinessException("菜单\"" + sysMenuEntityVo.getName() + "\"为系统菜单，不可删除");
             }
 
             // 根据菜单查询是否有子菜单或者按钮
@@ -239,7 +239,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenuDao, SysMenuEntit
             map.put("parentId", menuId);
             List<SysMenuEntityVo> sysMenuEntityList = this.queryList(map);
             if (sysMenuEntityList != null && sysMenuEntityList.size() > 0) {
-                throw new RRException("请先删除菜单\"" + sysMenuEntityVo.getName() + "\"下的菜单和按钮");
+                throw new BusinessException("请先删除菜单\"" + sysMenuEntityVo.getName() + "\"下的菜单和按钮");
             }
 
             map.put("menuId", menuId);

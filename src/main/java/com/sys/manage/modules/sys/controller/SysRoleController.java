@@ -2,7 +2,6 @@ package com.sys.manage.modules.sys.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.sys.manage.common.utils.R;
-import com.sys.manage.modules.sys.entity.SysRoleEntity;
 import com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo;
 import com.sys.manage.modules.sys.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;

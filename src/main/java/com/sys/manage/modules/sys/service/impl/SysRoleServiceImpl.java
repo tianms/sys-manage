@@ -1,12 +1,11 @@
 package com.sys.manage.modules.sys.service.impl;
 
 import com.sys.manage.common.constants.Constant;
-import com.sys.manage.common.exception.RRException;
+import com.sys.manage.common.exception.BusinessException;
 import com.sys.manage.common.utils.MapUtils;
 import com.sys.manage.common.utils.UUIDUtil;
 import com.sys.manage.modules.base.service.impl.BaseServiceImpl;
 import com.sys.manage.modules.sys.dao.SysRoleDao;
-import com.sys.manage.modules.sys.entity.SysRoleMenuEntity;
 import com.sys.manage.modules.sys.entity.vo.SysRoleEntityVo;
 import com.sys.manage.modules.sys.service.SysRoleMenuService;
 import com.sys.manage.modules.sys.service.SysRoleService;
@@ -109,7 +108,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleDao, SysRoleEntit
             // 查询角色信息
             SysRoleEntityVo sysRoleEntityVo = super.queryById(roleId);
             if (Constant.SYS_CONSTANT.SUPER_ADMIN.equals(sysRoleEntityVo.getCreateUserId())) {
-                throw new RRException("超级管理员不可以删除");
+                throw new BusinessException("超级管理员不可以删除");
             }
 
             // Step:1 删除角色关联的菜单
